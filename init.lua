@@ -3,7 +3,7 @@ vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
 vim.cmd("set relativenumber")
-vim.cmd("set nuw=4")
+-- vim.cmd("set nuw=4")
 vim.cmd("set clipboard=unnamedplus")
 function LineNumberColors()
     vim.api.nvim_set_hl(0, 'LineNrAbove', { fg='#51B3EC'})
@@ -18,7 +18,7 @@ vim.g.loaded_netrwPlugin = 1
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
-vim.g.mapleader = " " 
+vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 require("config.lazy")

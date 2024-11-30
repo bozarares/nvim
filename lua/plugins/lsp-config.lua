@@ -10,9 +10,8 @@ return {
     dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "volar", "pyright" },-- Adaugă serverele dorite aici
+        ensure_installed = { "lua_ls", "volar", "pyright" }, -- Adaugă serverele dorite aici
       })
-   
       local lspconfig = require("lspconfig")
       local mason_lspconfig = require("mason-lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -61,5 +60,16 @@ return {
   {
     "neovim/nvim-lspconfig",
     -- Configurația pentru LSP este deja gestionată în mason-lspconfig
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
   },
 }
