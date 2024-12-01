@@ -5,7 +5,7 @@ return {
     -- Configurare de bază pentru toggleterm.nvim
     require("toggleterm").setup({
       open_mapping = [[<c-§>]], -- Apasă Ctrl+§ pentru a deschide terminalul
-      direction = "horizontal",      -- Mod implicit: fereastră flotantă
+      direction = "horizontal", -- Mod implicit: fereastră flotantă
       size = 20,                -- Dimensiunea terminalului
       shade_terminals = true,   -- Terminal întunecat pentru lizibilitate mai bună
       float_opts = {            -- Opțiuni pentru modul floating
@@ -32,4 +32,3 @@ return {
     end, { desc = "Toggle terminal in tab" })
   end,
 }
-

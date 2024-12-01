@@ -10,7 +10,7 @@ return {
     dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "volar", "pyright" }, -- Adaugă serverele dorite aici
+        ensure_installed = { "lua_ls", "volar", "pyright", "intelephense", "eslint" }, -- Adaugă serverele dorite aici
       })
       local lspconfig = require("lspconfig")
       local mason_lspconfig = require("mason-lspconfig")
@@ -59,7 +59,19 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    -- Configurația pentru LSP este deja gestionată în mason-lspconfig
+    dependencies = {
+      {
+        "SmiteshP/nvim-navbuddy",
+        dependencies = {
+          "SmiteshP/nvim-navic",
+          "MunifTanjim/nui.nvim"
+        },
+        config = {
+          vim.keymap.set("n", "<leader>nb", ":Navbuddy<CR>", { noremap = true, silent = true })
+        },
+        opts = { lsp = { auto_attach = true } }
+      }
+    }
   },
   {
     "folke/lazydev.nvim",
