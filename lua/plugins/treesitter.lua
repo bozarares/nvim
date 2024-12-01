@@ -5,7 +5,7 @@ return {
     local configs = require("nvim-treesitter.configs")
 
     configs.setup({
-      ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "elixir", "heex", "javascript", "html", "vue" }, -- Adaugă `vue`
+      ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "elixir", "heex", "javascript", "html", "vue", "typescript", "html", "css"  }, -- Adaugă `vue`
       sync_install = false,                                                                                       -- Instalează limbajele sincron
       auto_install = true,                                                                                        -- Instalează automat limbajele lipsă
       ignore_install = {},                                                                                        -- Poți ignora limbajele pe care nu le dorești

@@ -3,59 +3,72 @@ return {
     "williamboman/mason.nvim",
     config = function()
       require("mason").setup()
-    end
+    end,
   },
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "volar", "pyright", "intelephense", "eslint" }, -- Adaugă serverele dorite aici
+        ensure_installed = { "lua_ls", "volar", "ts_ls", "pyright", "intelephense", "eslint", "tailwindcss" },
       })
+
       local lspconfig = require("lspconfig")
       local mason_lspconfig = require("mason-lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-      -- Setează capabilitățile globale
+      -- Capacități globale
       local capabilities = cmp_nvim_lsp.default_capabilities()
 
-      -- Definirea funcției on_attach global
+      -- Funcția globală `on_attach`
       local on_attach = function(client, bufnr)
-        -- Activare completare automatizată
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
         vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-        -- Setarea mapping-urilor locale bufferului
         local opts = { buffer = bufnr }
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-        vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-        vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-        vim.keymap.set('n', '<space>wl', function()
-          print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        end, opts)
-        vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', '<space>fo', function()
-          vim.lsp.buf.format { async = true }
-        end, opts)
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
       end
 
-      -- Configurarea handler-elor pentru toate serverele
+    -- https://github.com/vuejs/language-tools/
+    local mason_registry = require("mason-registry")
+    local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
+      -- .. "/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
+      .. "/node_modules/@vue/language-server"
+
+    -- local vue_language_server_path =
+    --   "/home/efrayanglain/.nvm/versions/node/v20.10.0/lib/node_modules/@vue/typescript-plugin"
+
+    lspconfig.ts_ls.setup({
+      init_options = {
+        plugins = {
+          {
+            name = "@vue/typescript-plugin",
+            location = vue_language_server_path,
+            languages = { "vue" },
+          },
+        },
+      },
+      filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" },
+    })
+lspconfig.tailwindcss.setup {
+  cmd = { "tailwindcss-language-server", "--stdio" },
+  filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+  root_dir = lspconfig.util.root_pattern("tailwind.config.js", "package.json"),
+  settings = {},
+}
+      -- Configurarea handler-elor pentru alte servere
       mason_lspconfig.setup_handlers({
-        -- Handler implicit pentru toate serverele
         function(server_name)
-          lspconfig[server_name].setup({
-            capabilities = capabilities,
-            on_attach = on_attach,
-          })
+          if server_name ~= "volar" and server_name ~= "ts_ls" then
+            lspconfig[server_name].setup({
+              capabilities = capabilities,
+              on_attach = on_attach,
+            })
+          end
         end,
       })
-    end
+    end,
   },
   {
     "neovim/nvim-lspconfig",
@@ -75,13 +88,13 @@ return {
   },
   {
     "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
+    ft = "lua", -- doar pentru fișiere Lua
     opts = {
       library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` word is found
+        -- Încarcă tipuri luvit când cuvântul `vim.uv` este găsit
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
     },
   },
 }
+
